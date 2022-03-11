@@ -1,5 +1,5 @@
 import { UserDB } from '../database/db'
-import { RowDataPacket } from 'mysql2'
+import { OkPacket, RowDataPacket } from 'mysql2'
 
 export class User {
   id: number;
@@ -23,12 +23,15 @@ export class User {
         FROM users AS u
         WHERE u.discordID = '${discordID}'`
 
+      console.log(db)
+
       if (db) {
+        console.debug(queryString)
         db.query(queryString, (err, result) => {
-          if (err) { callback(err, 'Error Code RCLUS2'); return }
+          if (err) { callback(err, 'Error Code: UA-SRCLUS2'); return }
 
           const row = (<RowDataPacket> result)[0]
-          if (row.id) {
+          if (row) {
             const user: User = new User(row.id, row.discordID, row.discordName, row.walletAddress)
             callback(null, user)
           } else {
@@ -39,7 +42,39 @@ export class User {
         db.end()
       }
     } catch {
-      callback(null, 'Error Code SRCLUS1')
+      console.debug('DB Connection Issue')
+      callback(null, 'Error Code: UA-SRCLUS1')
+    }
+  }
+
+  static createUser = (discordID: string, discordName: string, walletAddress: string|undefined, callback: Function) => {
+    try {
+      discordID = UserDB.checkString(discordID)
+      discordName = UserDB.checkString(discordName)
+      walletAddress = UserDB.checkString(walletAddress)
+
+      const db = UserDB.getConnection()
+
+      const queryString = `
+        INSERT INTO users
+        (discordID, discordName, walletAddress)
+        VALUES(${discordID}, ${discordName}, ${walletAddress});`
+
+      console.debug(queryString)
+
+      if (db) {
+        db.query(queryString, (err, result) => {
+          if (err) { callback(err, 'Error Code: UA-SRCLUS3'); return }
+
+          const insertId = (<OkPacket> result).insertId
+          console.log(result)
+          callback(null, insertId)
+        })
+
+        db.end()
+      }
+    } catch {
+      callback(null, 'Error Code: SRCLUS4')
     }
   }
 }
