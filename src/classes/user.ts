@@ -16,25 +16,31 @@ export class User {
   }
 
   static getUserByDiscordID = (discordID: string, callback: Function) => {
-    const db = UserDB.getConnection()
+    try {
+      const db = UserDB.getConnection()
 
-    const queryString = `
-      SELECT u.id, u.discordID, u.discordName, u.walletAddress
-      FROM users AS u
-      WHERE u.discordID = '${discordID}'`
+      const queryString = `
+        SELECT u.id, u.discordID, u.discordName, u.walletAddress
+        FROM users AS u
+        WHERE u.discordID = '${discordID}'`
 
-    db.query(queryString, (err, result) => {
-      if (err) { callback(err); return }
+      if (db) {
+        db.query(queryString, (err, result) => {
+          if (err) { callback(err, 'Error Code 1'); return }
 
-      const row = (<RowDataPacket> result)[0]
-      if (row) {
-        const user: User = new User(row.id, row.discordID, row.discordName, row.walletAddress)
-        callback(null, user)
-      } else {
-        callback(null, undefined)
+          const row = (<RowDataPacket> result)[0]
+          if (row.id) {
+            const user: User = new User(row.id, row.discordID, row.discordName, row.walletAddress)
+            callback(null, user)
+          } else {
+            callback(null, undefined)
+          }
+        })
+
+        db.end()
       }
-    })
-
-    db.end()
+    } catch {
+      callback(null, 'Error Code SCU2')
+    }
   }
 }
