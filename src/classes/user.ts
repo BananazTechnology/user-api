@@ -1,7 +1,6 @@
 import { UserDB } from '../database/db'
 import { RowDataPacket } from 'mysql2'
 
-// eslint-disable-next-line no-unused-vars
 export class User {
   id: number;
   discordID: string;
