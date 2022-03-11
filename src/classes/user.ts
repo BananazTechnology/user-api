@@ -26,7 +26,7 @@ export class User {
 
       if (db) {
         db.query(queryString, (err, result) => {
-          if (err) { callback(err, 'Error Code 1'); return }
+          if (err) { callback(err, 'Error Code RCLUS2'); return }
 
           const row = (<RowDataPacket> result)[0]
           if (row.id) {
@@ -40,7 +40,7 @@ export class User {
         db.end()
       }
     } catch {
-      callback(null, 'Error Code SCU2')
+      callback(null, 'Error Code SRCLUS1')
     }
   }
 }

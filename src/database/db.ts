@@ -16,7 +16,7 @@ export class UserDB {
         database: process.env.DB_NAME
       })
     } catch {
-      console.log('Error Code SDD1')
+      console.log('Error Code SRDADB1')
     }
   }
 }
