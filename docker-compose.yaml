@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  key-api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: key-api:test
+    container_name: key-api
+    restart: always
+    stdin_open: true
+    tty: true
+    ports:
+      - "3300:3000"

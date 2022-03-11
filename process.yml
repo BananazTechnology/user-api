@@ -1,0 +1,5 @@
+apps:
+    - name: key-api
+      script: ./build/server.js
+      exec_mode: cluster
+      instances: max
