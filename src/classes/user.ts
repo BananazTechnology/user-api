@@ -23,9 +23,7 @@ export class User {
         FROM users AS u
         WHERE u.discordID = '${discordID}'`
 
-      console.log(db)
-
-      if (db) {
+      if (db && db.authorized) {
         console.debug(queryString)
         db.query(queryString, (err, result) => {
           if (err) { callback(err, 'Error Code: UA-SRCLUS2'); return }
@@ -40,6 +38,8 @@ export class User {
         })
 
         db.end()
+      } else {
+        callback(null, 'Error Code: UA-SRCLUS5')
       }
     } catch {
       console.debug('DB Connection Issue')
@@ -62,7 +62,7 @@ export class User {
 
       console.debug(queryString)
 
-      if (db) {
+      if (db && db.authorized) {
         db.query(queryString, (err, result) => {
           if (err) { callback(err, 'Error Code: UA-SRCLUS3'); return }
 
