@@ -60,9 +60,11 @@ export class User {
         (discordID, discordName, walletAddress)
         VALUES(${discordID}, ${discordName}, ${walletAddress});`
 
-      console.debug(queryString)
+      console.debug(`DB Authorized: ${db?.authorized}`)
 
       if (db && db.authorized) {
+        console.debug(queryString)
+
         db.query(queryString, (err, result) => {
           if (err) { callback(err, 'Error Code: UA-SRCLUS3'); return }
 
@@ -72,9 +74,11 @@ export class User {
         })
 
         db.end()
+      } else {
+        callback(null, 'Error Code: UA-SRCLUS5')
       }
     } catch {
-      callback(null, 'Error Code: SRCLUS4')
+      callback(null, 'Error Code: UA-SRCLUS4')
     }
   }
 }
