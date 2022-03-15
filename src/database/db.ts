@@ -7,17 +7,19 @@ const port = process.env.DB_PORT ? +process.env.DB_PORT : undefined
 // eslint-disable-next-line no-unused-vars
 export class UserDB {
   static getConnection (): mysql.Connection|undefined {
-    console.log('Attempting DB Connection')
+    console.debug('Attempting DB Connection')
     try {
-      return mysql.createConnection({
+      const conn = mysql.createConnection({
         host: process.env.DB_HOST,
         port: port,
         user: process.env.DB_USER,
         password: process.env.DB_PWD,
         database: process.env.DB_NAME
       })
+
+      return conn
     } catch {
-      console.log('Error Code: UA-SRDADB1')
+      console.error('Error Code: UA-SRDADB1')
     }
   }
 

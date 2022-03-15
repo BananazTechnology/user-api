@@ -23,7 +23,7 @@ export class User {
         FROM users AS u
         WHERE u.discordID = '${discordID}'`
 
-      if (db && db.authorized) {
+      if (db) {
         console.debug(queryString)
         db.query(queryString, (err, result) => {
           if (err) { callback(err, 'Error Code: UA-SRCLUS2'); return }
@@ -39,7 +39,7 @@ export class User {
 
         db.end()
       } else {
-        callback(null, 'Error Code: UA-SRCLUS5')
+        callback(null, 'Error Code: UA-SRCLUS6')
       }
     } catch {
       console.debug('DB Connection Issue')
@@ -60,9 +60,7 @@ export class User {
         (discordID, discordName, walletAddress)
         VALUES(${discordID}, ${discordName}, ${walletAddress});`
 
-      console.debug(`DB Authorized: ${db?.authorized}`)
-
-      if (db && db.authorized) {
+      if (db) {
         console.debug(queryString)
 
         db.query(queryString, (err, result) => {
