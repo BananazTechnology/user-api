@@ -67,8 +67,8 @@ export class User {
           if (err) { callback(err, 'Error Code: UA-SRCLUS3'); return }
 
           const insertId = (<OkPacket> result).insertId
-          console.log(result)
-          callback(null, insertId)
+          const user: User = new User(insertId, discordID, discordName, walletAddress)
+          callback(null, user)
         })
 
         db.end()
