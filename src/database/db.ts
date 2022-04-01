@@ -17,6 +17,10 @@ export class UserDB {
         database: process.env.DB_NAME
       })
 
+      conn.on('error', function (err: any) {
+        console.log(err)
+      })
+
       return conn
     } catch {
       console.error('Error Code: UA-SRDADB1')
