@@ -14,6 +14,39 @@ export class User {
     this.walletAddress = walletAddress
   }
 
+  static getUserByID = (id: number, callback: Function) => {
+    try {
+      const db = UserDB.getConnection()
+
+      const queryString = `
+        SELECT u.id, u.discordID, u.discordName, u.walletAddress
+        FROM users AS u
+        WHERE u.id = ${id}`
+
+      if (db) {
+        console.debug(queryString)
+        db.query(queryString, (err, result) => {
+          if (err) { callback(err, 'Error Code: UA-SRCLUS2'); return }
+
+          const row = (<RowDataPacket> result)[0]
+          if (row) {
+            const user: User = new User(row.id, row.discordID, row.discordName, row.walletAddress)
+            callback(null, user)
+          } else {
+            callback(null, undefined)
+          }
+        })
+
+        db.end()
+      } else {
+        callback(null, 'Error Code: UA-SRCLUS6')
+      }
+    } catch {
+      console.debug('DB Connection Issue')
+      callback(null, 'Error Code: UA-SRCLUS1')
+    }
+  }
+
   static getUserByDiscordID = (discordID: string, callback: Function) => {
     try {
       const db = UserDB.getConnection()

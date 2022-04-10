@@ -3,6 +3,21 @@ import { User } from '../classes/user'
 
 const getUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const id: number = +(req.params.id)
+
+    User.getUserByID(id, (err: Error, user: User) => {
+      if (err) {
+        return res.status(500).json({ message: err.message })
+      }
+      res.status(200).json({ data: user })
+    })
+  } catch {
+    console.log('Error Code: UA-SRCOUS1')
+  }
+}
+
+const getDiscrodUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const discordID: string = String(req.params.discordID)
 
     User.getUserByDiscordID(discordID, (err: Error, user: User) => {
@@ -34,4 +49,4 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-export default { getUser, createUser }
+export default { getUser, getDiscrodUser, createUser }
