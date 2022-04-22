@@ -11,4 +11,4 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - "3300:3000"
+      - "3300:4000"

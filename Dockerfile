@@ -1,5 +1,5 @@
 FROM node
-EXPOSE 3000
+EXPOSE 4000
 COPY . /usr/local/bananaztech
 WORKDIR /usr/local/bananaztech
 RUN npm i
