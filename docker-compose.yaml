@@ -1,14 +1,20 @@
 version: "3.8"
 
 services:
-  key-api:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    image: key-api:test
-    container_name: key-api
+  user-sys-api-ts:
+    image: bananaztech/user-sys-api-ts:latest
+    container_name: user-api-ts-prod
     restart: always
-    stdin_open: true
-    tty: true
-    ports:
-      - "3300:4000"
+    environment:
+      DB_PORT: 3306
+      DB_HOST: "example.com"
+      DB_USER: "Key-API"
+      DB_PWD: "example"
+      DB_NAME: "keys"
+    expose:
+      - 4000
+
+networks:
+  default:
+    external:
+      name: frontend
