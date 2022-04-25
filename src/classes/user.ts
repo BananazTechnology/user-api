@@ -112,4 +112,36 @@ export class User {
       callback(null, 'Error Code: UA-SRCLUS4')
     }
   }
+
+  static editUser = (id: number, discordID: string, discordName: string, walletAddress: string|undefined, callback: Function) => {
+    try {
+      discordID = UserDB.checkString(discordID)
+      discordName = UserDB.checkString(discordName)
+      walletAddress = UserDB.checkString(walletAddress)
+
+      const db = UserDB.getConnection()
+
+      const queryString = `
+        UPDATE users
+        SET discordID = ${discordID}, discordName = ${discordName}, walletAddress = ${walletAddress}
+        WHERE id = ${id};`
+
+      if (db) {
+        console.debug(queryString)
+
+        db.query(queryString, (err, result) => {
+          if (err) { callback(err, 'ERROR'); return }
+
+          const rowCount = (<OkPacket> result).changedRows
+          callback(null, rowCount)
+        })
+
+        db.end()
+      } else {
+        callback(new Error('DB Connection Issue'))
+      }
+    } catch {
+      callback(new Error('Update User Error'))
+    }
+  }
 }

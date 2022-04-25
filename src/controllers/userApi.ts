@@ -49,4 +49,23 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-export default { getUser, getDiscrodUser, createUser }
+const editUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const discordID: string = req.body.discordID
+    const discordName: string = req.body.discordName
+    const walletAddress: string = req.body.walletAddress
+    const id: number = +(req.params.id)
+    console.log(req.body)
+
+    User.editUser(id, discordID, discordName, walletAddress, (err: Error, user: User) => {
+      if (err) {
+        return res.status(500).json({ message: err.message })
+      }
+      res.status(200).json({ data: user })
+    })
+  } catch {
+    console.log('Error Code: UA-SRCOUS2')
+  }
+}
+
+export default { getUser, getDiscrodUser, createUser, editUser }
