@@ -3,7 +3,7 @@ import controller from '../controllers/userApi'
 const router = express.Router()
 
 router.get('/userAPI/user/:id', controller.getUser)
-router.get('/userAPI/user/edit/:id', controller.editUser)
+router.put('/userAPI/user/:id', controller.editUser)
 router.get('/userAPI/user/getByDiscord/:discordID', controller.getDiscrodUser)
 router.post('/userAPI/user', controller.createUser)
 
