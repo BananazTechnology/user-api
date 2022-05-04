@@ -14,134 +14,110 @@ export class User {
     this.walletAddress = walletAddress
   }
 
-  static getUserByID = (id: number, callback: Function) => {
-    try {
-      const db = UserDB.getConnection()
+  static async getUserByID (id: number): Promise<User|undefined> {
+    const db = new UserDB()
 
-      const queryString = `
-        SELECT u.id, u.discordID, u.discordName, u.walletAddress
-        FROM users AS u
-        WHERE u.id = ${id}`
+    const queryString = `
+      SELECT u.id, u.discordID, u.discordName, u.walletAddress
+      FROM users AS u
+      WHERE u.id = ${id}`
 
-      if (db) {
-        console.debug(queryString)
-        db.query(queryString, (err, result) => {
-          if (err) { callback(err, 'Error Code: UA-SRCLUS2'); return }
+    const result = await db.query(queryString)
 
-          const row = (<RowDataPacket> result)[0]
-          if (row) {
-            const user: User = new User(row.id, row.discordID, row.discordName, row.walletAddress)
-            callback(null, user)
-          } else {
-            callback(null, undefined)
-          }
-        })
-
-        db.end()
-      } else {
-        callback(null, 'Error Code: UA-SRCLUS6')
+    return new Promise((resolve, reject) => {
+      try {
+        const row = (<RowDataPacket> result)[0]
+        if (row) {
+          const user: User = new User(row.id, row.discordID, row.discordName, row.walletAddress)
+          resolve(user)
+        } else {
+          resolve(undefined)
+        }
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
       }
-    } catch {
-      console.debug('DB Connection Issue')
-      callback(null, 'Error Code: UA-SRCLUS1')
-    }
+    })
   }
 
-  static getUserByDiscordID = (discordID: string, callback: Function) => {
-    try {
-      const db = UserDB.getConnection()
+  static async getUserByDiscordID (discordID: string): Promise<User|undefined> {
+    const db = new UserDB()
 
-      const queryString = `
-        SELECT u.id, u.discordID, u.discordName, u.walletAddress
-        FROM users AS u
-        WHERE u.discordID = '${discordID}'`
+    const queryString = `
+      SELECT u.id, u.discordID, u.discordName, u.walletAddress
+      FROM users AS u
+      WHERE u.discordID = '${discordID}'`
 
-      if (db) {
-        console.debug(queryString)
-        db.query(queryString, (err, result) => {
-          if (err) { callback(err, 'Error Code: UA-SRCLUS2'); return }
+    const result = await db.query(queryString)
 
-          const row = (<RowDataPacket> result)[0]
-          if (row) {
-            const user: User = new User(row.id, row.discordID, row.discordName, row.walletAddress)
-            callback(null, user)
-          } else {
-            callback(null, undefined)
-          }
-        })
-
-        db.end()
-      } else {
-        callback(null, 'Error Code: UA-SRCLUS6')
+    return new Promise((resolve, reject) => {
+      try {
+        const row = (<RowDataPacket> result)[0]
+        if (row) {
+          const user: User = new User(row.id, row.discordID, row.discordName, row.walletAddress)
+          resolve(user)
+        } else {
+          resolve(undefined)
+        }
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
       }
-    } catch {
-      console.debug('DB Connection Issue')
-      callback(null, 'Error Code: UA-SRCLUS1')
-    }
+    })
   }
 
-  static createUser = (discordID: string, discordName: string, walletAddress: string|undefined, callback: Function) => {
-    try {
-      discordID = UserDB.checkString(discordID)
-      discordName = UserDB.checkString(discordName)
-      walletAddress = UserDB.checkString(walletAddress)
+  static async createUser (discordID: string, discordName: string, walletAddress: string|undefined): Promise<User|undefined> {
+    const db = new UserDB()
+    discordID = UserDB.checkString(discordID)
+    discordName = UserDB.checkString(discordName)
+    walletAddress = UserDB.checkString(walletAddress)
 
-      const db = UserDB.getConnection()
+    const queryString = `
+      INSERT INTO users
+      (discordID, discordName, walletAddress)
+      VALUES(${discordID}, ${discordName}, ${walletAddress});`
 
-      const queryString = `
-        INSERT INTO users
-        (discordID, discordName, walletAddress)
-        VALUES(${discordID}, ${discordName}, ${walletAddress});`
+    const result = await db.query(queryString)
 
-      if (db) {
-        console.debug(queryString)
-
-        db.query(queryString, (err, result) => {
-          if (err) { callback(err, 'Error Code: UA-SRCLUS3'); return }
-
+    return new Promise((resolve, reject) => {
+      try {
+        const row = (<RowDataPacket> result)[0]
+        if (row) {
           const insertId = (<OkPacket> result).insertId
           const user: User = new User(insertId, discordID, discordName, walletAddress)
-          callback(null, user)
-        })
-
-        db.end()
-      } else {
-        callback(null, 'Error Code: UA-SRCLUS5')
+          resolve(user)
+        } else {
+          resolve(undefined)
+        }
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
       }
-    } catch {
-      callback(null, 'Error Code: UA-SRCLUS4')
-    }
+    })
   }
 
-  static editUser = (id: number, discordID: string, discordName: string, walletAddress: string|undefined, callback: Function) => {
-    try {
-      discordID = UserDB.checkString(discordID)
-      discordName = UserDB.checkString(discordName)
-      walletAddress = UserDB.checkString(walletAddress)
+  static async editUser (id: number, discordID: string, discordName: string, walletAddress: string|undefined): Promise<User|undefined> {
+    const db = new UserDB()
+    discordID = UserDB.checkString(discordID)
+    discordName = UserDB.checkString(discordName)
+    walletAddress = UserDB.checkString(walletAddress)
 
-      const db = UserDB.getConnection()
+    const queryString = `
+      UPDATE users
+      SET discordID = ${discordID}, discordName = ${discordName}, walletAddress = ${walletAddress}
+      WHERE id = ${id};`
 
-      const queryString = `
-        UPDATE users
-        SET discordID = ${discordID}, discordName = ${discordName}, walletAddress = ${walletAddress}
-        WHERE id = ${id};`
+    const result = await db.query(queryString)
 
-      if (db) {
-        console.debug(queryString)
-
-        db.query(queryString, (err, result) => {
-          if (err) { callback(err, 'ERROR'); return }
-
-          const rowCount = (<OkPacket> result).changedRows
-          callback(null, rowCount)
-        })
-
-        db.end()
-      } else {
-        callback(new Error('DB Connection Issue'))
+    return new Promise((resolve, reject) => {
+      try {
+        const row = (<RowDataPacket> result)[0]
+        if (row) {
+          const user: User = new User(id, discordID, discordName, walletAddress)
+          resolve(user)
+        } else {
+          resolve(undefined)
+        }
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
       }
-    } catch {
-      callback(new Error('Update User Error'))
-    }
+    })
   }
 }

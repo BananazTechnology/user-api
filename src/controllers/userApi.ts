@@ -5,14 +5,11 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id: number = +(req.params.id)
 
-    User.getUserByID(id, (err: Error, user: User) => {
-      if (err) {
-        return res.status(500).json({ message: err.message })
-      }
-      res.status(200).json({ data: user })
-    })
-  } catch {
-    console.log('Error Code: UA-SRCOUS1')
+    const user = await User.getUserByID(id)
+
+    res.status(200).json({ data: user })
+  } catch (err: any) {
+    res.status(500).json({ message: err.message })
   }
 }
 
@@ -20,14 +17,11 @@ const getDiscrodUser = async (req: Request, res: Response, next: NextFunction) =
   try {
     const discordID: string = String(req.params.discordID)
 
-    User.getUserByDiscordID(discordID, (err: Error, user: User) => {
-      if (err) {
-        return res.status(500).json({ message: err.message })
-      }
-      res.status(200).json({ data: user })
-    })
-  } catch {
-    console.log('Error Code: UA-SRCOUS1')
+    const user = await User.getUserByDiscordID(discordID)
+
+    res.status(200).json({ data: user })
+  } catch (err: any) {
+    res.status(500).json({ message: err.message })
   }
 }
 
@@ -36,16 +30,12 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     const discordID: string = req.body.discordID
     const discordName: string = req.body.discordName
     const walletAddress: string = req.body.walletAddress
-    console.log(req.body)
 
-    User.createUser(discordID, discordName, walletAddress, (err: Error, user: User) => {
-      if (err) {
-        return res.status(500).json({ message: err.message })
-      }
-      res.status(200).json({ data: user })
-    })
-  } catch {
-    console.log('Error Code: UA-SRCOUS2')
+    const user = await User.createUser(discordID, discordName, walletAddress)
+
+    res.status(200).json({ data: user })
+  } catch (err: any) {
+    res.status(500).json({ message: err.message })
   }
 }
 
@@ -55,16 +45,12 @@ const editUser = async (req: Request, res: Response, next: NextFunction) => {
     const discordName: string = req.body.discordName
     const walletAddress: string = req.body.walletAddress
     const id: number = +(req.params.id)
-    console.log(req.body)
 
-    User.editUser(id, discordID, discordName, walletAddress, (err: Error, user: User) => {
-      if (err) {
-        return res.status(500).json({ message: err.message })
-      }
-      res.status(200).json({ data: user })
-    })
-  } catch {
-    console.log('Error Code: UA-SRCOUS2')
+    const user = await User.editUser(id, discordID, discordName, walletAddress)
+
+    res.status(200).json({ data: user })
+  } catch (err: any) {
+    res.status(500).json({ message: err.message })
   }
 }
 
