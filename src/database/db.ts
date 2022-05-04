@@ -10,6 +10,7 @@ export class UserDB {
     console.debug('Attempting DB Connection')
     try {
       const conn = mysql.createConnection({
+        connectionLimit: 25,
         host: process.env.DB_HOST,
         port: port,
         user: process.env.DB_USER,
