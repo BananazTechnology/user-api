@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "HOST=0.0.0.0 ts-node src/server.ts",
-    "dev": "HOST=0.0.0.0 nodemon src/server.ts",
+    "dev": "nodemon src/server.ts",
     "build": "tsc -p ."
   },
   "repository": {
