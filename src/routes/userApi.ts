@@ -1,10 +1,13 @@
 import express from 'express'
-import controller from '../controllers/userApi'
+import userController from '../controllers/user'
+import logController from '../controllers/log'
 const router = express.Router()
 
-router.get('/userAPI/user/:id', controller.getUser)
-router.put('/userAPI/user/:id', controller.editUser)
-router.get('/userAPI/user/getByDiscord/:discordID', controller.getDiscrodUser)
-router.post('/userAPI/user', controller.createUser)
+router.get('/userAPI/user/:id', userController.getUser)
+router.put('/userAPI/user/:id', userController.editUser)
+router.get('/userAPI/user/getByDiscord/:discordID', userController.getDiscrodUser)
+router.post('/userAPI/user', userController.createUser)
+
+router.post('/userAPI/log', logController.newLog)
 
 export = router;

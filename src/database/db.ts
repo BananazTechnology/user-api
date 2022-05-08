@@ -30,7 +30,7 @@ export class UserDB {
     if (str === 'null' || str === 'undefined') {
       str = 'null'
     } else if (str) {
-      str = `'${str}'`
+      str = `'${str.replace(/'/g, '\\\'')}'`
     } else {
       str = 'null'
     }
