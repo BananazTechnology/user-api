@@ -1,4 +1,4 @@
-import { OkPacket } from 'mysql2'
+import { OkPacket, RowDataPacket } from 'mysql2'
 import { UserDB } from '../database/db'
 
 export class CommandLog {
@@ -9,8 +9,9 @@ export class CommandLog {
   private command: string;
   private subCommand: string|undefined;
   private options: string|undefined;
+  private success: boolean = false;
 
-  private constructor (id: number, user: string, server: string, channel: string, command: string, subCommand: string|undefined, options: string|undefined) {
+  private constructor (id: number, user: string, server: string, channel: string, command: string, subCommand: string|undefined, options: string|undefined, success: boolean = false) {
     this.id = id
     this.user = user
     this.server = server
@@ -18,6 +19,7 @@ export class CommandLog {
     this.command = command
     this.subCommand = subCommand
     this.options = options
+    this.success = success
   }
 
   static async logInteraction (user: string, server: string, channel: string, command: string, subCommand: string|undefined, options: string|undefined): Promise<CommandLog|undefined> {
@@ -49,7 +51,38 @@ export class CommandLog {
       try {
         if ((<OkPacket> result).insertId) {
           const insertId = (<OkPacket> result).insertId
-          const log: CommandLog = new CommandLog(insertId, user, server, channel, command, subCommand, options)
+          const log: CommandLog = new CommandLog(insertId, user, server, channel, command, subCommand, options, false)
+          resolve(log)
+        } else {
+          resolve(undefined)
+        }
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
+      }
+    })
+  }
+
+  static async completeTransaction (id: number, user: string, server: string, channel: string, command: string, subCommand: string|undefined, options: string|undefined, success: boolean): Promise<CommandLog|undefined> {
+    const db = new UserDB()
+    user = UserDB.checkString(user)
+    server = UserDB.checkString(server)
+    channel = UserDB.checkString(channel)
+    command = UserDB.checkString(command)
+    subCommand = UserDB.checkString(subCommand)
+    options = UserDB.checkString(options)
+
+    const queryString = `
+      UPDATE commandLog cl
+      SET cl.success = ${success}
+      WHERE cl.id = ${id}`
+
+    const result = await db.query(queryString)
+
+    return new Promise((resolve, reject) => {
+      try {
+        const row = (<RowDataPacket> result)[0]
+        if (row) {
+          const log: CommandLog = new CommandLog(id, row.user, row.server, row.channel, row.command, row.subCommand, row.options, success)
           resolve(log)
         } else {
           resolve(undefined)
