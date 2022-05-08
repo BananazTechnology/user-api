@@ -1,6 +1,8 @@
 import mysql from 'mysql2'
 import * as dotenv from 'dotenv'
-dotenv.config()
+import path from 'path'
+
+dotenv.config({ path: path.resolve('./config.env') })
 
 const port = process.env.DB_PORT ? +process.env.DB_PORT : undefined
 
