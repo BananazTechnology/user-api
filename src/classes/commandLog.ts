@@ -44,7 +44,6 @@ export class CommandLog {
         ${options}
       );`
 
-    // console.log(queryString)
     const result = await db.query(queryString)
 
     return new Promise((resolve, reject) => {
@@ -80,9 +79,8 @@ export class CommandLog {
 
     return new Promise((resolve, reject) => {
       try {
-        const row = (<RowDataPacket> result)[0]
-        if (row) {
-          const log: CommandLog = new CommandLog(id, row.user, row.server, row.channel, row.command, row.subCommand, row.options, success)
+        if ((<RowDataPacket> result).affectedRows) {
+          const log: CommandLog = new CommandLog(id, user, server, channel, command, subCommand, options, success)
           resolve(log)
         } else {
           resolve(undefined)

@@ -107,8 +107,7 @@ export class User {
 
     return new Promise((resolve, reject) => {
       try {
-        const row = (<RowDataPacket> result)[0]
-        if (row) {
+        if ((<RowDataPacket> result).affectedRows) {
           const user: User = new User(id, discordID, discordName, walletAddress)
           resolve(user)
         } else {

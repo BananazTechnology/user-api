@@ -13,7 +13,7 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-const getDiscrodUser = async (req: Request, res: Response, next: NextFunction) => {
+const getDiscordUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const discordID: string = String(req.params.discordID)
 
@@ -45,7 +45,7 @@ const editUser = async (req: Request, res: Response, next: NextFunction) => {
     const discordName: string = req.body.discordName
     const walletAddress: string = req.body.walletAddress
     const id: number = +(req.params.id)
-
+    console.log(req.body.discordID)
     const user = await User.editUser(id, discordID, discordName, walletAddress)
 
     res.status(200).json({ data: user })
@@ -54,4 +54,4 @@ const editUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-export default { getUser, getDiscrodUser, createUser, editUser }
+export default { getUser, getDiscordUser: getDiscordUser, createUser, editUser }
