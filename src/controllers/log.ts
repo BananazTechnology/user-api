@@ -4,8 +4,9 @@ import { CommandLog } from '../classes/commandLog'
 const getRecent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id: number = +(req.params.id)
+    const cmd: string = req.params.cmd
 
-    const log = await CommandLog.getRecentByID(id)
+    const log = await CommandLog.getRecentCmd(id, cmd)
 
     res.status(200).json({ data: log })
   } catch (err: any) {

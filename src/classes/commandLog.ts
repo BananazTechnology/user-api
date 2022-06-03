@@ -28,7 +28,7 @@ export class CommandLog {
     this.timestamp = timestamp
   }
 
-  static async getRecentByID (id: number): Promise<CommandLog|undefined> {
+  static async getRecentCmd (id: number, cmd: string): Promise<CommandLog|undefined> {
     const db = new UserDB()
 
     const queryString = `
@@ -37,6 +37,7 @@ export class CommandLog {
       JOIN discordChannels dc ON dc.id = cl.channel
       JOIN discordServers ds ON ds.id = dc.server
       WHERE cl.user = ${id}
+      AND cl.command LIKE '%${cmd}%'
       ORDER BY cl.timestamp DESC
       LIMIT 1`
 

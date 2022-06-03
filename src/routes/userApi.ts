@@ -8,7 +8,7 @@ router.get('/userAPI/user/getByDiscord/:discordID', userController.getDiscordUse
 router.put('/userAPI/user/:id', userController.editUser)
 router.post('/userAPI/user', userController.createUser)
 
-router.get('/userAPI/log/recent/:id', logController.getRecent)
+router.get('/userAPI/log/recent/:id/:cmd', logController.getRecent)
 router.put('/userAPI/log', logController.completeLog)
 router.post('/userAPI/log', logController.newLog)
 
