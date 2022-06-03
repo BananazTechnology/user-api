@@ -40,4 +40,13 @@ export class UserDB {
 
     return str
   }
+
+  static getISOString (utcString: string|undefined): string {
+    if (utcString) {
+      const [date, time] = utcString.split(' ')
+      return `${date}T${time}.000Z`
+    } else {
+      return 'null'
+    }
+  }
 }

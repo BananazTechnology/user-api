@@ -1,6 +1,18 @@
 import { Request, Response, NextFunction } from 'express'
 import { CommandLog } from '../classes/commandLog'
 
+const getRecent = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id: number = +(req.params.id)
+
+    const log = await CommandLog.getRecentByID(id)
+
+    res.status(200).json({ data: log })
+  } catch (err: any) {
+    res.status(500).json({ message: err.message })
+  }
+}
+
 const newLog = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user: string = req.body.user
@@ -28,8 +40,10 @@ const completeLog = async (req: Request, res: Response, next: NextFunction) => {
     const subCommand: string = req.body.subCommand
     const options: string = req.body.options
     const success: boolean = req.body.success
+    const status: string = req.body.status
+    const message: string = req.body.message
 
-    const log = await CommandLog.completeTransaction(id, user, server, channel, command, subCommand, options, success)
+    const log = await CommandLog.completeTransaction(id, user, server, channel, command, subCommand, options, success, status, message)
 
     res.status(200).json({ data: log })
   } catch (err: any) {
@@ -37,4 +51,4 @@ const completeLog = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-export default { newLog, completeLog }
+export default { getRecent, newLog, completeLog }
