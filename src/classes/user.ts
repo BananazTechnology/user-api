@@ -1,5 +1,5 @@
-import { UserDB } from '../database/db'
 import { OkPacket, RowDataPacket } from 'mysql2'
+import { checkString, dbQuery } from '../database/db'
 
 export class User {
   id: number;
@@ -15,14 +15,12 @@ export class User {
   }
 
   static async getUserByID (id: number): Promise<User|undefined> {
-    const db = new UserDB()
-
     const queryString = `
       SELECT u.id, u.discordID, u.discordName, u.walletAddress
       FROM users AS u
       WHERE u.id = ${id}`
 
-    const result = await db.query(queryString)
+    const result = await dbQuery(queryString)
 
     return new Promise((resolve, reject) => {
       try {
@@ -40,14 +38,12 @@ export class User {
   }
 
   static async getUserByDiscordID (discordID: string): Promise<User|undefined> {
-    const db = new UserDB()
-
     const queryString = `
       SELECT u.id, u.discordID, u.discordName, u.walletAddress
       FROM users AS u
       WHERE u.discordID = '${discordID}'`
 
-    const result = await db.query(queryString)
+    const result = await dbQuery(queryString)
 
     return new Promise((resolve, reject) => {
       try {
@@ -65,17 +61,16 @@ export class User {
   }
 
   static async createUser (discordID: string, discordName: string, walletAddress: string|undefined): Promise<User|undefined> {
-    const db = new UserDB()
-    discordID = UserDB.checkString(discordID)
-    discordName = UserDB.checkString(discordName)
-    walletAddress = UserDB.checkString(walletAddress)
+    discordID = checkString(discordID)
+    discordName = checkString(discordName)
+    walletAddress = checkString(walletAddress)
 
     const queryString = `
       INSERT INTO users
       (discordID, discordName, walletAddress)
       VALUES(${discordID}, ${discordName}, ${walletAddress});`
 
-    const result = await db.query(queryString)
+    const result = await dbQuery(queryString)
 
     return new Promise((resolve, reject) => {
       try {
@@ -93,17 +88,16 @@ export class User {
   }
 
   static async editUser (id: number, discordID: string, discordName: string, walletAddress: string|undefined): Promise<User|undefined> {
-    const db = new UserDB()
-    discordID = UserDB.checkString(discordID)
-    discordName = UserDB.checkString(discordName)
-    walletAddress = UserDB.checkString(walletAddress)
+    discordID = checkString(discordID)
+    discordName = checkString(discordName)
+    walletAddress = checkString(walletAddress)
 
     const queryString = `
       UPDATE users
       SET discordID = ${discordID}, discordName = ${discordName}, walletAddress = ${walletAddress}
       WHERE id = ${id};`
 
-    const result = await db.query(queryString)
+    const result = await dbQuery(queryString)
 
     return new Promise((resolve, reject) => {
       try {
