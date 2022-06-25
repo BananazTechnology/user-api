@@ -65,8 +65,8 @@ export class CommandLog {
     subCommand = checkString(subCommand)
     options = checkString(options)
 
-    if(command == 'profile' && subCommand == 'create'){
-      user = '0';
+    if (command === 'profile' && subCommand === 'create') {
+      user = '0'
     }
 
     await this.createchannel(server, channel)
