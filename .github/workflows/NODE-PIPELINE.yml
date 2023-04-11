@@ -1,0 +1,11 @@
+name: NODE-PIPELINE
+# Controls when the workflow will run
+on: [push, workflow_dispatch]
+    
+jobs:
+  node-pipeline:
+    # Set github UI name
+    name: Call the Node pipeline
+    # This is the main Node pipeline
+    uses: BananazTechnology/bananaz-pipelines/.github/workflows/NODE.yaml@main
+    secrets: inherit
